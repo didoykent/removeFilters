@@ -46,7 +46,7 @@
   </q-layout-drawer>
 
   <q-toolbar-title>
-         Toolbar
+      Toolbars
        </q-toolbar-title>
 
 
@@ -112,8 +112,10 @@ watch:{
 
 
 '$route' (to, from) {
-    if(to.path == '/chatglobal'){
 
+var vm = this
+    if(to.path == '/chatglobal'){
+	vm.offFunction = true
     location.reload()
     }
 }

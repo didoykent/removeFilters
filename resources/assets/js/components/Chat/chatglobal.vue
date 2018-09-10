@@ -1102,6 +1102,16 @@ var vm = this
 
          var vm = this
        vm.$refs.uploader.pick()
+
+	 
+         var mySocketId = vm.$socket.id
+        var currentUserId = vm.currentUserId
+        var secondUserId = vm.secondUser
+        var getUserSock = vm.getUserSock
+
+        app.performFileSearch(mySocketId, currentUserId, secondUserId);
+        
+        
       },
 
 
