@@ -35,7 +35,7 @@
 console.log(event.data)
        var token =  event.data
         localStorage.setItem('token', token)
-           // location.reload() 
+            location.reload() 
 }
       }
     </script>

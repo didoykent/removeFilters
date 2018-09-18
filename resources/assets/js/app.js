@@ -73,7 +73,7 @@ axios.interceptors.response.use(function (response) {
 
     if(error.response.status === 400 || error.response.status === 401 || error.response.status === 403){
 
-      store.dispatch('studentLogOut')
+      
     }
     // Do something with response error
     return Promise.reject(error);

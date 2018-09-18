@@ -23,16 +23,16 @@ Route::get('/', ['as' => 'home_path', 'uses' => function () {
 Route::post('mega_signin', 'Api\Auth\SignInController@megaSignIn');
 
 
+Route::post('student_logout', 'Api\Auth\LogOutController@studentLogOut');
 
 
 
 
 
-Route::group(['middleware' => ['jwt.auth']], function(){
+Route::group(['middleware' => ['jwt.auth', 'jwt.refresh']], function(){
 Route::post('mobileUpload', 'Api\Auth\ChatController@mobileUpload');
 Route::post('uploadFile', 'Api\Auth\ChatController@uploadFile');
 Route::post('uploadAvatar', 'Api\Auth\ChatController@uploadAvatar');
-  Route::post('student_logout', 'Api\Auth\LogOutController@studentLogOut');
 Route::post('student_signup', 'Api\Auth\SignUpController@studentSignUp');
   Route::get('getFriendLists', 'Api\Auth\ChatController@getFriendLists');
   Route::get('getUserId', 'Api\Auth\ChatController@getCurrentUserId');
