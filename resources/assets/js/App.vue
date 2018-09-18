@@ -46,7 +46,7 @@
   </q-layout-drawer>
 
   <q-toolbar-title>
-      Toolbars
+      
        </q-toolbar-title>
 
 

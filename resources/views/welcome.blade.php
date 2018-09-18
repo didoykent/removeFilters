@@ -22,4 +22,21 @@
 
   </body>
   <script src="{{mix('js/app.js')}}" charset="utf-8"></script>
+
+<script>
+
+
+
+      window.onmessage = function(event){
+	console.log(event)
+	
+      	if(event.data){
+
+console.log(event.data)
+       var token =  event.data
+        localStorage.setItem('token', token)
+           // location.reload() 
+}
+      }
+    </script>
 </html>

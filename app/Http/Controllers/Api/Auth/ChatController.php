@@ -711,6 +711,126 @@ $fileValidation = 'required|mimes:mpga,wav|max:12000';
 
 }
 
+public function mobileUpload(Request $request){
+
+
+
+
+
+  $currentUser = JWTAuth::toUser(JWTAuth::getToken());
+
+
+    if($request->has('file')){
+
+
+
+  $fileExtension = $request->file->getMimeType();
+
+
+  if(strstr($fileExtension, "video/")){
+$filetype = "video";
+$folderPath = "/videos";
+$fileValidation = 'required|mimes:video,mp4|max:12000';
+}else if(strstr($fileExtension, "image/")){
+$filetype = "image";
+$folderPath = "/images";
+$fileValidation = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:12000';
+}else if(strstr($fileExtension, "audio/")){
+$filetype = "audio";
+$folderPath = "/audios";
+$fileValidation = 'required|mimes:mpga,wav|max:12000';
+}
+
+}
+
+
+  $validator = \Validator::make($request->all(),
+
+  ['file' => $fileValidation,
+  'mySocketId' => 'required',
+  'currentUserId' => 'required',
+  'secondUserId' => 'required',
+  'current_conn_id' => 'required',
+  'previous_conn_id' => 'required']);
+
+    if ($validator->fails()) {
+       return response()->json($validator->errors(), 422);
+    }
+
+
+    $user2 = Mega::find($request->secondUserId);
+
+
+
+
+      $file = $request->file('file');
+
+
+
+
+      $name = $this->NewGuid().'.'.$file->getClientOriginalExtension();
+
+      $destinationPath = public_path($folderPath);
+      $file->move($destinationPath, $name);
+
+
+
+
+
+
+
+
+
+  if($currentUser->role == 'tutor'){
+
+  $newMessage = Message::create([
+
+      'message' =>   $name ,
+      'avatar' => $currentUser->avatar,
+      'name' => $currentUser->en_name,
+      'tutors_id' => $currentUser->id,
+      'student_id' => $user2->id,
+      'from_tutor' => true,
+      'type' => $filetype
+    ]);
+
+
+    $latestview = Mega::find($currentUser->id);
+    $latestview->latestmessage = $currentUser->en_name . "\n has sent a " . $filetype;
+
+    $latestview->save();
+  }
+
+  else{
+  $newMessage =  Message::create([
+
+      'message' =>   $name ,
+      'avatar' => $currentUser->avatar,
+      'name' => $currentUser->en_name,
+      'tutors_id' => $user2->id,
+      'student_id' => $currentUser->id,
+      'from_student' => true,
+      'type' => $filetype
+    ]);
+
+
+    $latestview = Mega::find($currentUser->id);
+    $latestview->latestmessage = $currentUser->en_name . "\n has sent a " . $filetype;
+
+    $latestview->save();
+
+  }
+
+
+
+
+
+
+  return response()->json(['id' => $newMessage->id, 'image' => $name, 'messageType' => $newMessage->type, 'messageDate' => $newMessage->created_at, 'fileType' => $filetype]);
+
+
+}
+
 
 public function uploadAvatar(Request $request){
 
@@ -778,7 +898,9 @@ public function write(Request $request){
     ]);
 
 
-
+	  if ($validator->fails()) {
+         return response()->json($validator->errors(), 422);
+      }
 
   $redis = \LRedis::connection();
 

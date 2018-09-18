@@ -29,7 +29,7 @@ Route::post('mega_signin', 'Api\Auth\SignInController@megaSignIn');
 
 
 Route::group(['middleware' => ['jwt.auth']], function(){
-
+Route::post('mobileUpload', 'Api\Auth\ChatController@mobileUpload');
 Route::post('uploadFile', 'Api\Auth\ChatController@uploadFile');
 Route::post('uploadAvatar', 'Api\Auth\ChatController@uploadAvatar');
   Route::post('student_logout', 'Api\Auth\LogOutController@studentLogOut');

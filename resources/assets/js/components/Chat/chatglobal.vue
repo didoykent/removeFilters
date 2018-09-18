@@ -91,7 +91,7 @@
               </q-item-main>
 
               <q-item-side right>
-        <q-item-tile stamp>{{messageDate(user)}}</q-item-tile>
+          <q-item-tile v-if = "user.latestmessage!=='You are now connected to chat'" stamp>{{messageDate(user)}}</q-item-tile>
         <q-item-tile right icon="check_circle" :color="user.isActive ? 'green' : 'gray'" />
       </q-item-side>
             </q-item>
@@ -856,7 +856,35 @@ var vm = this
 
 
    messageDate (message) {
-     return moment(message.created_at).format('dddd')
+       let myDate = moment(message.created_at).format('dddd')
+
+
+     let today  = moment(new Date()).format('dddd');
+
+
+
+let yesterday = moment(new Date()).add(-1, 'days').format('dddd');
+
+
+if( myDate === today){
+
+  return 'Today';
+
+
+}
+
+else if(myDate === yesterday){
+
+  return 'Yesterday';
+
+}
+
+else{
+
+
+
+       return myDate;
+}
    },
 
 
@@ -1108,8 +1136,9 @@ var vm = this
         var currentUserId = vm.currentUserId
         var secondUserId = vm.secondUser
         var getUserSock = vm.getUserSock
-
-        app.performFileSearch(mySocketId, currentUserId, secondUserId);
+	var current_conn_id = vm.getUserSock['current_conn_id']
+	var previous_conn_id = vm.getUserSock['previous_conn_id']
+        app.performFileSearch(mySocketId, currentUserId, secondUserId, current_conn_id, previous_conn_id);
         
         
       },
