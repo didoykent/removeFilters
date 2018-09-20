@@ -26,7 +26,7 @@ redisClient.on('message', function(channel, message){
 
 var addCharacters = "[" + message + "]"
 
-console.log(JSON.parse(addCharacters))
+
 io.emit('write', {EVALUATION: JSON.parse(addCharacters)});
 
 
@@ -52,13 +52,7 @@ io.on('connection', function(socket){
 
 
 
-socket.on('write', function(data){
 
-
-console.log(data)
-
-io.emit('write', data);
-});
 
 
 
