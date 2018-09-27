@@ -467,8 +467,8 @@ import { scroll } from "quasar-framework/dist/quasar.mat.esm.js";
                tempArray: [],
 
                type: 'image',
-
-
+	
+	       currentSocketId: ''
 
 
        }
@@ -518,6 +518,29 @@ import { scroll } from "quasar-framework/dist/quasar.mat.esm.js";
 
          },
 
+   currentSocketId(val){
+
+
+           var vm = this
+
+           if(val){
+
+
+                          vm.$socket.disconnect()
+                          vm.$socket.connect()
+                          vm.currentSocketId =   vm.$socket.id
+
+                          console.log('may ara', vm.currentSocketId)
+
+
+
+           }
+
+           else{
+             vm.currentSocketId = vm.$socket.id
+                console.log('may ara na', vm.currentSocketId)
+           }
+         },
 
 
          currentUserAvatar(newval, oldval){
@@ -712,8 +735,10 @@ import { scroll } from "quasar-framework/dist/quasar.mat.esm.js";
        vm.$socket.on('Now', function(data){
          if(vm.isLogged){
 
-
-
+       console.log('nowdata', data)
+console.log('data', data.mySocket)
+	console.log('previous user sock', vm.getUserSock)
+	
 
                       vm.socketOp = new FormData();
 
@@ -722,24 +747,22 @@ import { scroll } from "quasar-framework/dist/quasar.mat.esm.js";
                       axios.post('api/initializeData', vm.socketOp).then(function(response){
 
 
-                      for(var i =0; i<vm.friendLatestMessage.length; i++){
-
-                        if(vm.friendLatestMessage[i]['id'] === data.currentUserId){
-
-                          Vue.set(vm.friendLatestMessage[i], 'current_conn_id', data.mySocket)
-                          Vue.set(vm.friendLatestMessage[i], 'previous_conn_id', data.mySocket)
-
-                          if(vm.getUserSock['id'] === data.currentUserId){
-
-                            Vue.set(vm.getUserSock, 'current_conn_id', data.mySocket)
-                            Vue.set(vm.getUserSock, 'previous_conn_id', data.mySocket)
-                          }
-
-                        }
 
 
 
-                      }
+  let nameToFindIndex = vm.friendLatestMessage.findIndex(p => p.id === data.currentUserId)
+
+                            Vue.set(vm.friendLatestMessage[nameToFindIndex], 'current_conn_id', data.mySocket)
+                            Vue.set(vm.friendLatestMessage[nameToFindIndex], 'previous_conn_id', data.mySocket)
+                            if(vm.getUserSock['id'] === data.currentUserId){
+
+                              Vue.set(vm.getUserSock, 'current_conn_id', data.mySocket)
+                              Vue.set(vm.getUserSock, 'previous_conn_id', data.mySocket)
+                           console.log('current user sock', vm.getUserSock)
+ }
+
+
+
 
 
 
@@ -817,11 +840,10 @@ var vm = this
 
 
 
-
   
 
 
-       this.friendLists()
+      this.friendLists()
 
        this.showTextLoading()
 
@@ -1226,8 +1248,8 @@ var vm = this
 
        var vm  = this
 
-
-
+	if(vm.message.trim()){
+	
        const last = vm.message
 
        var spaceCount = (vm.message.split(" ").length - 1);
@@ -1272,6 +1294,8 @@ var vm = this
 
 
           vm.initializeScrollArea()
+
+}
        },
 
 
@@ -1307,27 +1331,33 @@ var vm = this
 
        var vm = this
 
-       if(vm.isLogged){
 
 
-       vm.$socket.connect()
+      
 
 
-       }
+
+
+       
 
             await axios.get('api/getFriendLists').then(function(response){
+
+
+
+	var mysocketid  = vm.$socket.id
+
+console.log('mysocketid', mysocketid)
+if(mysocketid === undefined || mysocketid === null  ){
+
+location.reload()
+}
+
               vm.currentUserAvatar = response.data.currentUserAvatar
               vm.currentUserName = response.data.currentName
 
               Vue.set(vm.$data, 'friendLatestMessage', response.data.friendLatestMessage)
-              Vue.set(vm.$data, 'myLatestMessage', response.data.myLatestMessage)
 
-         let unreadMessages = response.data.unreadMessages
-       Vue.set(vm.$data, 'myFriends', response.data.friendLists)
-       for(var i =0; i<vm.friendLatestMessage.length; i++){
-         Vue.set(vm.friendLatestMessage[i],'notif',unreadMessages[i+1])
 
-       }
 
 
 
@@ -1335,7 +1365,7 @@ var vm = this
        vm.currentUserRole = response.data.role
 
        vm.messageFriend =  response.data.currentUser
-            vm.$socket.emit('ImOn', {currentUserId: vm.currentUserId, mySocket: vm.$socket.id, friend: response.data.currentUser})
+            vm.$socket.emit('ImOn', {currentUserId: vm.currentUserId, mySocket: mysocketid, friend: response.data.currentUser})
 
 
 

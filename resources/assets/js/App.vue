@@ -115,8 +115,8 @@ watch:{
 
 var vm = this
     if(to.path == '/chatglobal'){
-	vm.$socket.disconnect()
-	vm.offFunction = true
+	
+
     location.reload()
     }
 }

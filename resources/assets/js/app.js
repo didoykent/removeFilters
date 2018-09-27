@@ -18,7 +18,7 @@ import "quasar-framework/dist/umd/quasar.ios.css";
 import 'animate.css/animate.min.css'
 import Vuetify from 'vuetify'
 
-
+import 'babel-polyfill'
 import Quasar, { QLayout, QInput, QBtn, QChatMessage, QPage, QPageContainer, QToolbar, QToolbarTitle, QLayoutHeader,
 
 

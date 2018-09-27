@@ -29,7 +29,7 @@ var addCharacters = "[" + message + "]"
 
 io.emit('write', {EVALUATION: JSON.parse(addCharacters)});
 
-
+console.log(message)
 });
 
 redisClient.on('disconnect', function(){
@@ -252,13 +252,12 @@ else if(clients.length <2){
 
 socket.on('write', function(data){
 
-console.log(data)
 })
 
 
 
 socket.on('friendOnline', function(data){
-
+   
   io.sockets.emit('yourFriend', data)
 
 })
@@ -336,7 +335,6 @@ else{
 
 
 socket.on('ImOn', function(data){
-
     users.push(socket.id)
     io.sockets.emit('Now', data)
 
