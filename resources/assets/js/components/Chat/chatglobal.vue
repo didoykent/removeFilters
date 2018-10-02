@@ -156,7 +156,8 @@
           <q-chat-message
                  :name="item.name"
                  :avatar="currentUserId == item.name ?  `images/${currentUserAvatar}` : `images/${item.avatar}`"
-                 :stamp="messageDate(item)"
+		 :label="item.label"
+                 :stamp="stampDate(item)"
                  :sent="currentUserName == item.name ? true : false"
 >               <div v-if="item.type === 'image'">
                <img class="responsive" :src="`./images/${item.message}`">
@@ -302,7 +303,7 @@ allowfullscreen
 
 import { scroll } from "quasar-framework/dist/quasar.mat.esm.js";
 
-
+  import _ from 'lodash'
 
 
   export default{
@@ -912,6 +913,45 @@ else{
 
 
 
+ stampDate(message){
+
+     let myDate = moment(message.created_at).format('LT')
+
+     return myDate
+
+   },
+
+labelUnique(){
+
+var vm = this
+
+
+
+let holder = []
+
+const filteredObject = _.pickBy(vm.myMessages, property => {
+  if(holder.indexOf(moment(property.created_at).format('dddd, MMM Do YY')) === -1) {
+      holder.push(moment(property.created_at).format('dddd, MMM Do YY'))
+      return true
+  }
+  return false
+})
+
+for(var i=0; i<holder.length; i++){
+
+  let nameToFindIndex = vm.myMessages.findIndex(p => (moment(p.created_at).format('dddd, MMM Do YY') === holder[i]))
+     Vue.set(vm.myMessages[nameToFindIndex],'label', holder[i])
+}
+
+
+
+
+
+
+
+},
+
+
    show () {
 
       var vm = this
@@ -1107,7 +1147,7 @@ var vm = this
            vm.currentUserName = response.data.currentUserName
            vm.secondUserName = response.data.secondUserName
 
-
+	   vm.labelUnique()
 
 
            }).catch(function(error){
@@ -1445,6 +1485,7 @@ location.reload()
 
        Vue.set(vm.$data, 'myMessages', response.data.messages)
 
+    vm.labelUnique()
 
        vm.scrollValue+=20
        vm.currentUserName = response.data.currentUserName
